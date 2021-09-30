@@ -74,16 +74,16 @@ pal_status_t pal_i2c_init(const pal_i2c_t* p_i2c_context)
 	int master_port;
 	esp32_i2c_ctx_t* master_ctx;
 	i2c_config_t conf;
-	
-#if 1 //def CONFIG_PAL_I2C_INIT_ENABLE	
+
+#if 1 //def CONFIG_PAL_I2C_INIT_ENABLE
 	ESP_LOGI("pal_i2c", "Initialize pal_i2c_init  ");
 
 	if ((p_i2c_context == NULL) || (p_i2c_context->p_i2c_hw_config == NULL))
 		return PAL_STATUS_FAILURE;
-	
+
 	master_ctx = (esp32_i2c_ctx_t*)p_i2c_context->p_i2c_hw_config;
 	master_port = master_ctx->port;
-	
+
     conf.mode = I2C_MODE_MASTER;
     conf.sda_io_num = master_ctx->sda_io;
     conf.sda_pullup_en = GPIO_PULLUP_ENABLE;
@@ -94,7 +94,7 @@ pal_status_t pal_i2c_init(const pal_i2c_t* p_i2c_context)
     i2c_driver_install(master_port, conf.mode,
                        PAL_I2C_MASTER_TX_BUF_DISABLE,
                        PAL_I2C_MASTER_RX_BUF_DISABLE, 0);
-	
+
     ESP_LOGI("pal_i2c", "init successful");
 #endif
 
@@ -105,15 +105,15 @@ pal_status_t pal_i2c_deinit(const pal_i2c_t* p_i2c_context)
 {
 	esp32_i2c_ctx_t* master_ctx;
 
-#if 1    //def CONFIG_PAL_I2C_INIT_ENABLE			
+#if 1    //def CONFIG_PAL_I2C_INIT_ENABLE
 	if ((p_i2c_context == NULL) || (p_i2c_context->p_i2c_hw_config == NULL))
 		return PAL_STATUS_FAILURE;
-	
+
 	master_ctx = (esp32_i2c_ctx_t*)p_i2c_context->p_i2c_hw_config;
-	
+
 	i2c_driver_delete(master_ctx->port);
 #endif
-	
+
     return PAL_STATUS_SUCCESS;
 }
 
@@ -166,13 +166,13 @@ pal_status_t pal_i2c_read(const pal_i2c_t * p_i2c_context, uint8_t * p_data, uin
 
 	if (length == 0)
         return status;
-	
+
 	if ((p_i2c_context == NULL) || (p_i2c_context->p_i2c_hw_config == NULL))
 		return status;
 
 	master_ctx = (esp32_i2c_ctx_t*)p_i2c_context->p_i2c_hw_config;
 	i2c_master_port = master_ctx->port;
-	
+
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
     i2c_master_start(cmd);
     i2c_master_write_byte(cmd, ( p_i2c_context->slave_address << 1 ) | READ_BIT, ACK_CHECK_EN);
@@ -183,9 +183,9 @@ pal_status_t pal_i2c_read(const pal_i2c_t * p_i2c_context, uint8_t * p_data, uin
     i2c_master_stop(cmd);
     esp_err_t ret = i2c_master_cmd_begin(i2c_master_port, cmd, 1000 / portTICK_RATE_MS);
     i2c_cmd_link_delete(cmd);
-	
+
     upper_layer_handler = (upper_layer_callback_t)p_i2c_context->upper_layer_event_handler;
-	
+
 	if (ret == ESP_OK) {
         //ESP_LOG_BUFFER_HEX("pal_i2c : R:", p_data, length);
 		upper_layer_handler(p_i2c_context->p_upper_layer_ctx , PAL_I2C_EVENT_SUCCESS);
