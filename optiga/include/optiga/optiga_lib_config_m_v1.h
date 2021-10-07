@@ -103,7 +103,7 @@ extern "C" {
     /** @brief OPTIGA COMMS shielded connection feature.
      *         To disable the feature, undefine the macro
      */
-    #define OPTIGA_COMMS_SHIELDED_CONNECTION
+    // #define OPTIGA_COMMS_SHIELDED_CONNECTION
 
     /** @brief Default reset protection level for OPTIGA CRYPT and UTIL APIs */
     #define OPTIGA_COMMS_DEFAULT_PROTECTION_LEVEL           OPTIGA_COMMS_NO_PROTECTION
@@ -114,7 +114,7 @@ extern "C" {
      *         Warm Reset - (2) : This is applicable if the host platform doesn't have GPIO option for VDD. \n
      *         Any other value will lead to error
      */
-    #define OPTIGA_COMMS_DEFAULT_RESET_TYPE     (0U)
+    #define OPTIGA_COMMS_DEFAULT_RESET_TYPE     (2U)
 
 
 #ifdef __cplusplus
